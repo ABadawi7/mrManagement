@@ -13,28 +13,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 // Enthält die Regeln für HTTP-Anfragen.
 
+// Damit unterscheiden wir GET- und POST-Anfragen.
+import org.springframework.http.HttpMethod;
+
 @Configuration
 // Spring lädt diese Sicherheitskonfiguration beim Start.
 public class SecurityConfig {
 
     @Bean
-    // Spring verwendet diese Methode als Sicherheitskonfiguration.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                // CSRF für den API-Test deaktivieren.
+                .csrf(csrf -> csrf.disable())
+
+                // Vorübergehend alle Anfragen erlauben.
                 .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
 
-                        // Diese Testadresse darf ohne Anmeldung geöffnet werden.
-                        .requestMatchers("/api/test").permitAll()
-
-                        // Alle anderen Seiten benötigen weiterhin eine Anmeldung.
-                        .anyRequest().authenticated()
-                )
-
-                // Die automatische Login-Seite bleibt vorerst aktiv.
-                .formLogin(form -> form.permitAll());
-
-        // Erstellt die fertige Sicherheitskonfiguration.
         return http.build();
     }
 }
