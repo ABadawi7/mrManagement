@@ -1,27 +1,26 @@
 package org.example.mrmanagement;
 
-// JdbcTemplate führt SQL-Befehle aus.
 import org.springframework.jdbc.core.JdbcTemplate;
-
-// Kennzeichnet die Klasse als Datenbankklasse.
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-// Spring erstellt automatisch ein Objekt dieser Klasse.
+// Marks this class as a database repository.
 public class MitarbeiterDao {
 
-    // Verbindung zur MySQL-Datenbank.
+    // Provides access to the MySQL database.
     private final JdbcTemplate jdbcTemplate;
 
-    // Spring übergibt JdbcTemplate automatisch.
+    // Spring injects JdbcTemplate automatically.
     public MitarbeiterDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // Speichert einen neuen Mitarbeiter in der Datenbank.
+    // Saves a new employee in the database.
     public int speichern(Mitarbeiter mitarbeiter) {
 
-        // SQL-Befehl zum Einfügen eines Mitarbeiters.
+        // SQL statement for inserting a new employee.
         String sql = """
                 INSERT INTO mitarbeiter
                 (
@@ -36,7 +35,7 @@ public class MitarbeiterDao {
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        // Führt den SQL-Befehl aus.
+        // Executes the INSERT statement with the employee data.
         return jdbcTemplate.update(
                 sql,
                 mitarbeiter.getMitarbeiterNr(),
@@ -47,5 +46,64 @@ public class MitarbeiterDao {
                 mitarbeiter.isAktiv(),
                 mitarbeiter.getEintrittsdatum()
         );
+    }
+
+    // Loads all employees from the database.
+    public List<Mitarbeiter> alleLaden() {
+
+        // SQL query for loading all employees.
+        String sql = """
+                SELECT
+                    id,
+                    mitarbeiter_nr,
+                    vorname,
+                    nachname,
+                    filiale_code,
+                    rolle,
+                    aktiv,
+                    eintrittsdatum
+                FROM mitarbeiter
+                ORDER BY id
+                """;
+
+        // Executes the query and converts each row into a Mitarbeiter object.
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> {
+
+            // Creates a new employee object.
+            Mitarbeiter mitarbeiter = new Mitarbeiter();
+
+            // Copies the database values into the employee object.
+            mitarbeiter.setId(resultSet.getLong("id"));
+            mitarbeiter.setMitarbeiterNr(
+                    resultSet.getString("mitarbeiter_nr")
+            );
+            mitarbeiter.setVorname(
+                    resultSet.getString("vorname")
+            );
+            mitarbeiter.setNachname(
+                    resultSet.getString("nachname")
+            );
+            mitarbeiter.setFilialeCode(
+                    resultSet.getString("filiale_code")
+            );
+            mitarbeiter.setRolle(
+                    resultSet.getString("rolle")
+            );
+            mitarbeiter.setAktiv(
+                    resultSet.getBoolean("aktiv")
+            );
+
+            // Reads the employment start date only when it is not null.
+            if (resultSet.getDate("eintrittsdatum") != null) {
+                mitarbeiter.setEintrittsdatum(
+                        resultSet
+                                .getDate("eintrittsdatum")
+                                .toLocalDate()
+                );
+            }
+
+            // Returns the completed employee object.
+            return mitarbeiter;
+        });
     }
 }

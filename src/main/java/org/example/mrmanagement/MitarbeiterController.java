@@ -1,41 +1,47 @@
 package org.example.mrmanagement;
 
-// Damit reagieren wir auf POST-Anfragen.
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
-// Liest die JSON-Daten aus der Anfrage.
 import org.springframework.web.bind.annotation.RequestBody;
-
-// Kennzeichnet die Klasse als REST-Controller.
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-// Spring erkennt diese Klasse als Controller.
+// Marks this class as a REST controller.
 public class MitarbeiterController {
 
-    // Zugriff auf die Datenbankklasse.
+    // Provides access to employee database operations.
     private final MitarbeiterDao mitarbeiterDao;
 
-    // Spring übergibt MitarbeiterDao automatisch.
+    // Spring injects MitarbeiterDao automatically.
     public MitarbeiterController(MitarbeiterDao mitarbeiterDao) {
         this.mitarbeiterDao = mitarbeiterDao;
     }
 
     @PostMapping("/api/mitarbeiter")
-    // Diese Methode wird bei POST /api/mitarbeiter ausgeführt.
+    // Handles POST requests for creating a new employee.
     public String mitarbeiterAnlegen(
             @RequestBody Mitarbeiter mitarbeiter
-            // JSON-Daten werden automatisch in ein Mitarbeiter-Objekt umgewandelt.
     ) {
 
-        // Speichert den Mitarbeiter in der Datenbank.
+        // Saves the received employee in the database.
         int anzahl = mitarbeiterDao.speichern(mitarbeiter);
 
-        // Prüft, ob genau ein Datensatz gespeichert wurde.
+        // Returns a success message when exactly one row was inserted.
         if (anzahl == 1) {
-            return "Mitarbeiter wurde gespeichert\n";
+            return "Mitarbeiter wurde gespeichert";
         }
 
+        // Returns an error message when no employee was inserted.
         return "Mitarbeiter konnte nicht gespeichert werden";
+    }
+
+    @GetMapping("/api/mitarbeiter")
+    // Handles GET requests for loading all employees.
+    public List<Mitarbeiter> alleMitarbeiterLaden() {
+
+        // Loads and returns all employees from the database.
+        return mitarbeiterDao.alleLaden();
     }
 }
