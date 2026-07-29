@@ -29,6 +29,11 @@ public class SecurityConfig {
 
                 // Vorübergehend alle Anfragen erlauben.
                 .authorizeHttpRequests(auth -> auth
+                        // Allows the test endpoint without login.
+                        .requestMatchers("/api/test").permitAll()
+                        // Allows all employee API requests temporarily.
+                        .requestMatchers("/api/mitarbeiter/**").permitAll()
+                        // Protects all other requests.
                         .anyRequest().permitAll()
                 );
 

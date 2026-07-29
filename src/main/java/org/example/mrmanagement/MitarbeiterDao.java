@@ -115,4 +115,27 @@ public class MitarbeiterDao {
         //Returns true when the number already exists.
         return count != null && count > 0;
     }
+
+    // Updates an existing employee in the database.
+    public int aktualisierung(long id, Mitarbeiter mitarbeiter) {
+
+        // SQL statement for updating employee data.
+        String sql = """
+                UPDATE mitarbeiter
+                SET
+                    vorname = ?,
+                    nachname = ?,
+                    filiale_code = ?,
+                    rolle = ?,
+                    aktiv = ?,
+                    eintrittsdatum = ?
+                    WHERE id = ?""";
+
+        return jdbcTemplate.update(
+                sql,mitarbeiter.getVorname(),mitarbeiter.getNachname(),
+                mitarbeiter.getFilialeCode(),
+                mitarbeiter.getRolle(),mitarbeiter.isAktiv(),
+                mitarbeiter.getEintrittsdatum(),id
+        );
+    }
 }

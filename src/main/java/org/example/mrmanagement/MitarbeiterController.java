@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.List;
 
@@ -46,5 +49,20 @@ public class MitarbeiterController {
 
         // Loads and returns all employees from the database.
         return mitarbeiterDao.alleLaden();
+    }
+
+    @PutMapping("api/mitarbeiter/{id}")
+    // Handels PUT requests for updating an existing employee.
+    public String mitarbeiterAktualisieren(@PathVariable long id,@Valid @RequestBody Mitarbeiter mitarbeiter) {
+        // Updates the employee with the given database ID.
+        int count = mitarbeiterDao.aktualisierung(id, mitarbeiter);
+
+        // Returns a success message when exactly one row was updated.
+        if(count==1) {
+            return "Mitarbeiter wurde aktualisiert";
+        }
+
+        //Returns an error message when no matching employee was found.
+        return "Mitarbeiter konnte nicht gefunden werden";
     }
 }
