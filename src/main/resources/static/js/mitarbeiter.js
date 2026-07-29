@@ -79,6 +79,52 @@ async function loadEmployees() {
         console.error("Failed to load employees:", error);
     }
 }
+// Sends the employee form data to the backend.
+async function saveEmployee(event){
+    // Prevents the browser form reloading the page.
+    event.preventDefault();
+
+    // Reads the values from the form.
+    const employee = {
+        vorname: document.getElementById("vorname").value.trim(),
+        nachname: document.getElementById("nachname").value.trim(),
+        filialeCode: document.getElementById("filialCode").value,
+        rolle: document.getElementById("rolle").value,
+        aktiv: document.getElementById("aktiv").checked,
+        eintrittsdatum: document.getElementById("eintrittsdatum").value || null
+    };
+
+    // Sends the employee data to the backend.
+
+    const response = await fetch("api/mitarbeiter",{
+       method: "POST",
+       headers: {
+           "Content-Type":"application/json"
+       } ,
+        body: JSON.stringify(employee)
+    });
+
+    // Reads the response message from the backend.
+    const message = await response.text();
+
+    // Displays the message on the page.
+    document.getElementById("meldung").textContent = message;
+
+    if(response.ok){
+
+        // Clears the form after successful saving.
+        document.getElementById("mitarbeiterFormular").reset();
+
+        // Activates the checkbox again after resetting.
+        document.getElementById("aktiv").checked = true;
+
+        // Reloads the employee table.
+        await loadEmployees();
+    }
+}
 
 // Loads the employees after the HTML page is fully loaded.
 document.addEventListener("DOMContentLoaded", loadEmployees);
+
+// Connects the form with the save function.
+document.getElementById("mitarbeiterFormular").addEventListener("submit",saveEmployee);
