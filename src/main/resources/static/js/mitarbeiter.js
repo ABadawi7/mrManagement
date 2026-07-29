@@ -5,7 +5,6 @@ function addCell(row, value) {
     const cell = document.createElement("td");
 
     // Inserts the value as plain text.
-    // HTML code is not interpreted.
     cell.textContent = value ?? "";
 
     // Adds the cell to the table row.
@@ -30,7 +29,7 @@ async function loadEmployees() {
         // Converts the JSON response into a JavaScript array.
         const employees = await response.json();
 
-        // Removes old rows before displaying the current data.
+        // Removes old rows before displaying current data.
         tableBody.textContent = "";
 
         // Creates one table row for each employee.
@@ -63,7 +62,7 @@ async function loadEmployees() {
         // Creates an error cell.
         const errorCell = document.createElement("td");
 
-        // The error cell covers all eight columns.
+        // The error cell covers all table columns.
         errorCell.colSpan = 8;
 
         // Displays a safe error message.
@@ -79,9 +78,11 @@ async function loadEmployees() {
         console.error("Failed to load employees:", error);
     }
 }
+
 // Sends the employee form data to the backend.
-async function saveEmployee(event){
-    // Prevents the browser form reloading the page.
+async function saveEmployee(event) {
+
+    // Prevents the browser from reloading the page.
     event.preventDefault();
 
     // Reads the values from the form.
@@ -91,40 +92,70 @@ async function saveEmployee(event){
         filialeCode: document.getElementById("filialCode").value,
         rolle: document.getElementById("rolle").value,
         aktiv: document.getElementById("aktiv").checked,
-        eintrittsdatum: document.getElementById("eintrittsdatum").value || null
+        eintrittsdatum:
+            document.getElementById("eintrittsdatum").value || null
     };
 
-    // Sends the employee data to the backend.
+    // Finds the message element on the page.
+    const messageElement = document.getElementById("meldung");
 
-    const response = await fetch("api/mitarbeiter",{
-       method: "POST",
-       headers: {
-           "Content-Type":"application/json"
-       } ,
-        body: JSON.stringify(employee)
-    });
+    try {
+        // Sends the employee data to the backend.
+        const response = await fetch("/api/mitarbeiter", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(employee)
+        });
 
-    // Reads the response message from the backend.
-    const message = await response.text();
+        if (response.ok) {
 
-    // Displays the message on the page.
-    document.getElementById("meldung").textContent = message;
+            // Reads and displays the success message.
+            const message = await response.text();
+            messageElement.textContent = message;
 
-    if(response.ok){
+            // Clears the form after successful saving.
+            document.getElementById("mitarbeiterFormular").reset();
 
-        // Clears the form after successful saving.
-        document.getElementById("mitarbeiterFormular").reset();
+            // Activates the checkbox again after resetting.
+            document.getElementById("aktiv").checked = true;
 
-        // Activates the checkbox again after resetting.
-        document.getElementById("aktiv").checked = true;
+            // Reloads the employee table.
+            await loadEmployees();
 
-        // Reloads the employee table.
-        await loadEmployees();
+        } else if (response.status === 400) {
+
+            // Displays a clear validation message.
+            messageElement.textContent =
+                "Bitte prüfen Sie die eingegebenen Mitarbeiterdaten.";
+
+        } else {
+
+            // Displays a general error message.
+            messageElement.textContent =
+                "Mitarbeiter konnte nicht gespeichert werden.";
+        }
+
+    } catch (error) {
+
+        // Displays a message when the backend cannot be reached.
+        messageElement.textContent =
+            "Verbindung zum Server fehlgeschlagen.";
+
+        // Writes the technical error into the browser console.
+        console.error("Failed to save employee:", error);
     }
 }
 
-// Loads the employees after the HTML page is fully loaded.
-document.addEventListener("DOMContentLoaded", loadEmployees);
+// Loads employees after the HTML page is fully loaded.
+document.addEventListener("DOMContentLoaded", () => {
 
-// Connects the form with the save function.
-document.getElementById("mitarbeiterFormular").addEventListener("submit",saveEmployee);
+    // Loads the current employee list.
+    loadEmployees();
+
+    // Connects the form with the save function.
+    document
+        .getElementById("mitarbeiterFormular")
+        .addEventListener("submit", saveEmployee);
+});
