@@ -1,5 +1,6 @@
 package org.example.mrmanagement;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 
@@ -25,6 +26,10 @@ public class MitarbeiterService {
         // Saves the employee in the database.
         return mitarbeiterDao.speichern(mitarbeiter);
     }
+    // Deletes an employee by employee number.
+    public int deleteByEmployeeNumber(String employeeNumber) {
+        return mitarbeiterDao.deleteByEmployeeNumber(employeeNumber);
+    }
     private String generateUniqueEmployeeNumber() {
         String employeeNumber;
 
@@ -37,5 +42,6 @@ public class MitarbeiterService {
 
         return employeeNumber;
     }
+
 
 }

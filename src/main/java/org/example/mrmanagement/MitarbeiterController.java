@@ -1,18 +1,17 @@
 package org.example.mrmanagement;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import jakarta.validation.Valid;
 
 
 import java.util.List;
 
 @RestController
 // Marks this class as a REST controller.
+@RequestMapping("/api/mitarbeiter")
 public class MitarbeiterController {
 
     // Provides access to employee business logic.
@@ -26,8 +25,15 @@ public class MitarbeiterController {
         this.mitarbeiterDao = mitarbeiterDao;
         this.mitarbeiterService = mitarbeiterService;
     }
+    @GetMapping
+    // Handles GET requests for loading all employees.
+    public List<Mitarbeiter> alleMitarbeiterLaden() {
 
-    @PostMapping("/api/mitarbeiter")
+        // Loads and returns all employees from the database.
+        return mitarbeiterDao.alleLaden();
+    }
+
+    @PostMapping
     // Handles POST requests for creating a new employee.
     public String mitarbeiterAnlegen(@Valid @RequestBody Mitarbeiter mitarbeiter) {
 
@@ -43,15 +49,9 @@ public class MitarbeiterController {
         return "Mitarbeiter konnte nicht gespeichert werden";
     }
 
-    @GetMapping("/api/mitarbeiter")
-    // Handles GET requests for loading all employees.
-    public List<Mitarbeiter> alleMitarbeiterLaden() {
 
-        // Loads and returns all employees from the database.
-        return mitarbeiterDao.alleLaden();
-    }
 
-    @PutMapping("api/mitarbeiter/{id}")
+    @PutMapping("/{id}")
     // Handels PUT requests for updating an existing employee.
     public String mitarbeiterAktualisieren(@PathVariable long id,@Valid @RequestBody Mitarbeiter mitarbeiter) {
         // Updates the employee with the given database ID.
@@ -65,4 +65,20 @@ public class MitarbeiterController {
         //Returns an error message when no matching employee was found.
         return "Mitarbeiter konnte nicht gefunden werden";
     }
+    // Deletes an employee by employee number.
+    @DeleteMapping("/nummer/{employeeNumber}")
+    public ResponseEntity<String> deleteEmployee(
+            @PathVariable String employeeNumber) {
+
+        int deletedRows =
+                mitarbeiterService.deleteByEmployeeNumber(employeeNumber);
+
+        if (deletedRows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok("Mitarbeiter wurde gelöscht.");
+    }
+
+
 }

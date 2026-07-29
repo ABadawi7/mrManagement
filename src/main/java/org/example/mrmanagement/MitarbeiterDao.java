@@ -138,4 +138,13 @@ public class MitarbeiterDao {
                 mitarbeiter.getEintrittsdatum(),id
         );
     }
+    public int deleteByEmployeeNumber(String employeeNumber) {
+
+        String sql = """
+                DELETE FROM mitarbeiter
+                WHERE mitarbeiter_nr = ?;
+        """;
+
+        return jdbcTemplate.update(sql, employeeNumber);
+    }
 }
