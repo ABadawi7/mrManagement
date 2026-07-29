@@ -106,4 +106,13 @@ public class MitarbeiterDao {
             return mitarbeiter;
         });
     }
+    public boolean existsByEmployeeNumber(String employeeNumber) {
+        // Counts matching employee numbers in the database.
+        String sql = """
+                SELECT COUNT(*) FROM mitarbeiter WHERE mitarbeiter_nr = ?;
+        """;
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, employeeNumber);
+        //Returns true when the number already exists.
+        return count != null && count > 0;
+    }
 }

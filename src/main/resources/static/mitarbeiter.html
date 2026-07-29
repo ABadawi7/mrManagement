@@ -11,6 +11,58 @@
 <!-- Main heading of the employee management page. -->
 <h1>Mitarbeiterverwaltung</h1>
 
+
+<!-- Form for creating a new employee.-->
+<form id="mitarbeiterFormular">
+    <div>
+        <label for="vorname">Vorname</label>
+        <input type="text" id="vorname" name="vorname required">
+    </div>
+
+    <div>
+        <label for="nachname">nachname</label>
+        <input type="text" id="nachname" name="nachname required">
+    </div>
+
+    <div>
+        <label for="filialCode">Filiale</label>
+        <select id="filialCode" name="filialCode" required>
+            <option value="">Bitte auswählen</option>
+            <option value="DKA106">DKA106</option>
+            <option value="DKA122">DKA122</option>
+            <option value="DKA36">DKA36</option>
+        </select>
+    </div>
+
+
+    <div>
+        <label for="rolle">Rolle</label>
+        <select name="rolle" id="rolle" required>
+            <option value="">Bitte auswählen</option>
+            <option value="Kassierer">Kassierer</option>
+            <option value="Manager">Manager</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="eintrittsdatum">Eintrittdatum</label>
+        <input type="date" id="eintrittsdatum" name="eintrittsdatum">
+    </div>
+
+    <div>
+        <label for="aktiv">Aktiv</label>
+        <input type="checkbox" id="aktiv" name="aktiv" checked>
+    </div>
+
+    <!-- Submit the employee form. -->
+<button type="submit">Speichern</button>
+</form>
+
+<p id="meldung"></p>
+
+<hr>
+
 <!-- Table for displaying all employees. -->
 <table border="1">
     <thead>
@@ -31,6 +83,5 @@
 </table>
 
 <script src="/js/mitarbeiter.js"></script>
-
 </body>
 </html>

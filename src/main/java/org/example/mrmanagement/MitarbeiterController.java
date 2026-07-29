@@ -11,22 +11,24 @@ import java.util.List;
 // Marks this class as a REST controller.
 public class MitarbeiterController {
 
+    // Provides access to employee business logic.
+    private final MitarbeiterService mitarbeiterService;
+
     // Provides access to employee database operations.
     private final MitarbeiterDao mitarbeiterDao;
 
     // Spring injects MitarbeiterDao automatically.
-    public MitarbeiterController(MitarbeiterDao mitarbeiterDao) {
+    public MitarbeiterController(MitarbeiterService mitarbeiterService,MitarbeiterDao mitarbeiterDao) {
         this.mitarbeiterDao = mitarbeiterDao;
+        this.mitarbeiterService = mitarbeiterService;
     }
 
     @PostMapping("/api/mitarbeiter")
     // Handles POST requests for creating a new employee.
-    public String mitarbeiterAnlegen(
-            @RequestBody Mitarbeiter mitarbeiter
-    ) {
+    public String mitarbeiterAnlegen(@RequestBody Mitarbeiter mitarbeiter) {
 
         // Saves the received employee in the database.
-        int anzahl = mitarbeiterDao.speichern(mitarbeiter);
+        int anzahl = mitarbeiterService.mitarbeiterAnlegen(mitarbeiter);
 
         // Returns a success message when exactly one row was inserted.
         if (anzahl == 1) {
