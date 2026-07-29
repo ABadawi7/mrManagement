@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class MitarbeiterController {
 
     @PostMapping("/api/mitarbeiter")
     // Handles POST requests for creating a new employee.
-    public String mitarbeiterAnlegen(@RequestBody Mitarbeiter mitarbeiter) {
+    public String mitarbeiterAnlegen(@Valid @RequestBody Mitarbeiter mitarbeiter) {
 
         // Saves the received employee in the database.
         int anzahl = mitarbeiterService.mitarbeiterAnlegen(mitarbeiter);

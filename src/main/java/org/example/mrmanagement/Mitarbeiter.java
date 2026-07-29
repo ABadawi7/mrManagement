@@ -1,32 +1,39 @@
 package org.example.mrmanagement;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+
 import java.time.LocalDate;
-// LocalDate wird für das Eintrittsdatum verwendet.
 
 public class Mitarbeiter {
 
-    // Eindeutige ID aus der Datenbank.
+    // Unique database ID.
     private Long id;
 
-    // Interne Mitarbeiternummer, zum Beispiel 1004.
+    // Internal six-digit employee number.
     private String mitarbeiterNr;
 
-    // Vorname des Mitarbeiters.
+    // The first name must not be empty.
+    @NotBlank
     private String vorname;
 
-    // Nachname des Mitarbeiters.
+    // The last name must not be empty.
+    @NotBlank
     private String nachname;
 
-    // Filiale, zum Beispiel DKA106.
+    // The branch code must not be empty.
+    @NotBlank
     private String filialeCode;
 
-    // Rolle, zum Beispiel KASSIERER oder MANAGER.
+    // The employee role must not be empty.
+    @NotBlank
     private String rolle;
 
-    // Gibt an, ob der Mitarbeiter aktiv ist.
+    // Indicates whether the employee is active.
     private boolean aktiv;
 
-    // Datum, an dem der Mitarbeiter angefangen hat.
+    // The employment start date must not be in the future.
+    @PastOrPresent
     private LocalDate eintrittsdatum;
 
     public Long getId() {
