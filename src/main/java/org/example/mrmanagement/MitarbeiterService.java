@@ -30,7 +30,7 @@ public class MitarbeiterService {
 
         do{
             // Generates a number between 100000 and 999999.
-            employeeNumber = String.valueOf(secureRandom.nextInt(999999) + 100000);
+            employeeNumber = String.valueOf(secureRandom.nextInt(900000) + 100000);
 
             // Repeats when the generated number already exists.
         }while(mitarbeiterDao.existsByEmployeeNumber(employeeNumber));
