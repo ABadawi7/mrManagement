@@ -147,4 +147,17 @@ public class MitarbeiterDao {
 
         return jdbcTemplate.update(sql, employeeNumber);
     }
+    // Deactivates an employee by employee number.
+    public int deactivateByEmployeeNumber(String employeeNumber) {
+
+        // SQL statement for setting the employee status to inactive.
+        String sql = """
+            UPDATE mitarbeiter
+            SET aktiv = false
+            WHERE mitarbeiter_nr = ?
+            """;
+
+        // Executes the UPDATE statement.
+        return jdbcTemplate.update(sql, employeeNumber);
+    }
 }

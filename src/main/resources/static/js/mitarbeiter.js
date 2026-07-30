@@ -307,6 +307,18 @@ function displayEmployees(employees) {
 
         actionCell.appendChild(editButton);
 
+        // Creates the deactivate button.
+        const deactivateButton = document.createElement("button");
+
+        deactivateButton.type = "button";
+        deactivateButton.textContent = "Deaktivieren";
+
+        deactivateButton.addEventListener("click", async () => {
+            await deactivateEmployee(employee.mitarbeiterNr);
+        });
+
+        actionCell.appendChild(deactivateButton);
+
         const deleteButton =
             document.createElement("button");
 
@@ -370,6 +382,60 @@ function filterEmployees() {
     });
 
     displayEmployees(filteredEmployees);
+}
+// Deactivates an employee by employee number.
+async function deactivateEmployee(employeeNumber) {
+
+    // Asks the user for confirmation.
+    const confirmed = confirm(
+        `Mitarbeiter ${employeeNumber} wirklich deaktivieren?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const messageElement =
+        document.getElementById("meldung");
+
+    try {
+
+        // Sends the deactivation request to the backend.
+        const response = await fetch(
+            `/api/mitarbeiter/nummer/${employeeNumber}/deaktivieren`,
+            {
+                method: "PUT"
+            }
+        );
+
+        if (response.status === 404) {
+            messageElement.textContent =
+                "Mitarbeiter wurde nicht gefunden.";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP error: ${response.status}`
+            );
+        }
+
+        messageElement.textContent =
+            await response.text();
+
+        // Reloads the employee table.
+        await loadEmployees();
+
+    } catch (error) {
+
+        messageElement.textContent =
+            "Mitarbeiter konnte nicht deaktiviert werden.";
+
+        console.error(
+            "Failed to deactivate employee:",
+            error
+        );
+    }
 }
 
 

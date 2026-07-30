@@ -1,6 +1,4 @@
 package org.example.mrmanagement;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 
@@ -41,6 +39,9 @@ public class MitarbeiterService {
         }while(mitarbeiterDao.existsByEmployeeNumber(employeeNumber));
 
         return employeeNumber;
+    }
+    public int deactivateByEmployeeNumber(String employeeNumber) {
+        return mitarbeiterDao.deactivateByEmployeeNumber(employeeNumber);
     }
 
 

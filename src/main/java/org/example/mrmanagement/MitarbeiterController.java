@@ -79,6 +79,22 @@ public class MitarbeiterController {
 
         return ResponseEntity.ok("Mitarbeiter wurde gelöscht.");
     }
+    // Deactivates an employee by employee number.
+    @PutMapping("/nummer/{employeeNumber}/deaktivieren")
+    public ResponseEntity<String> deactivateEmployee(
+            @PathVariable String employeeNumber) {
+
+        int updatedRows =
+                mitarbeiterService.deactivateByEmployeeNumber(employeeNumber);
+
+        if (updatedRows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(
+                "Mitarbeiter wurde deaktiviert."
+        );
+    }
 
 
 }
