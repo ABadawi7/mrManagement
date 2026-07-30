@@ -95,6 +95,22 @@ public class MitarbeiterController {
                 "Mitarbeiter wurde deaktiviert."
         );
     }
+    // Activates an employee by employee number.
+    @PutMapping("/nummer/{employeeNumber}/aktivieren")
+    public ResponseEntity<String> activateEmployee(
+            @PathVariable String employeeNumber) {
+
+        int updatedRows =
+                mitarbeiterService.activateByEmployeeNumber(employeeNumber);
+
+        if (updatedRows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(
+                "Mitarbeiter wurde aktiviert."
+        );
+    }
 
 
 }

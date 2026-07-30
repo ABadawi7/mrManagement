@@ -43,6 +43,10 @@ public class MitarbeiterService {
     public int deactivateByEmployeeNumber(String employeeNumber) {
         return mitarbeiterDao.deactivateByEmployeeNumber(employeeNumber);
     }
+    // Activates an employee by employee number.
+    public int activateByEmployeeNumber(String employeeNumber) {
+        return mitarbeiterDao.activateByEmployeeNumber(employeeNumber);
+    }
 
 
 }

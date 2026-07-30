@@ -307,17 +307,29 @@ function displayEmployees(employees) {
 
         actionCell.appendChild(editButton);
 
-        // Creates the deactivate button.
-        const deactivateButton = document.createElement("button");
+        // Creates either an activate or deactivate button.
+        const statusButton = document.createElement("button");
 
-        deactivateButton.type = "button";
-        deactivateButton.textContent = "Deaktivieren";
+        statusButton.type = "button";
 
-        deactivateButton.addEventListener("click", async () => {
-            await deactivateEmployee(employee.mitarbeiterNr);
-        });
+        if (employee.aktiv) {
 
-        actionCell.appendChild(deactivateButton);
+            statusButton.textContent = "Deaktivieren";
+
+            statusButton.addEventListener("click", async () => {
+                await deactivateEmployee(employee.mitarbeiterNr);
+            });
+
+        } else {
+
+            statusButton.textContent = "Aktivieren";
+
+            statusButton.addEventListener("click", async () => {
+                await activateEmployee(employee.mitarbeiterNr);
+            });
+        }
+
+        actionCell.appendChild(statusButton);
 
         const deleteButton =
             document.createElement("button");
@@ -433,6 +445,60 @@ async function deactivateEmployee(employeeNumber) {
 
         console.error(
             "Failed to deactivate employee:",
+            error
+        );
+    }
+}
+// Activates an employee by employee number.
+async function activateEmployee(employeeNumber) {
+
+    // Asks the user for confirmation.
+    const confirmed = confirm(
+        `Mitarbeiter ${employeeNumber} wirklich aktivieren?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const messageElement =
+        document.getElementById("meldung");
+
+    try {
+
+        // Sends the activation request to the backend.
+        const response = await fetch(
+            `/api/mitarbeiter/nummer/${employeeNumber}/aktivieren`,
+            {
+                method: "PUT"
+            }
+        );
+
+        if (response.status === 404) {
+            messageElement.textContent =
+                "Mitarbeiter wurde nicht gefunden.";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP error: ${response.status}`
+            );
+        }
+
+        messageElement.textContent =
+            await response.text();
+
+        // Reloads the employee table.
+        await loadEmployees();
+
+    } catch (error) {
+
+        messageElement.textContent =
+            "Mitarbeiter konnte nicht aktiviert werden.";
+
+        console.error(
+            "Failed to activate employee:",
             error
         );
     }

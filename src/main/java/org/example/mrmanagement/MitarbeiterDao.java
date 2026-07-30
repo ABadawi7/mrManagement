@@ -160,4 +160,17 @@ public class MitarbeiterDao {
         // Executes the UPDATE statement.
         return jdbcTemplate.update(sql, employeeNumber);
     }
+    // Activates an employee by employee number.
+    public int activateByEmployeeNumber(String employeeNumber) {
+
+        // SQL statement for setting the employee status to active.
+        String sql = """
+            UPDATE mitarbeiter
+            SET aktiv = true
+            WHERE mitarbeiter_nr = ?
+            """;
+
+        // Executes the UPDATE statement.
+        return jdbcTemplate.update(sql, employeeNumber);
+    }
 }
