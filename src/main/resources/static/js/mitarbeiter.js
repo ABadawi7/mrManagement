@@ -1,5 +1,4 @@
 // Stores the ID of the employee currently being edited.
-// Null means that a new employee will be created.
 let editingEmployeeId = null;
 
 
@@ -9,7 +8,7 @@ function addCell(row, value) {
     // Creates a new table cell.
     const cell = document.createElement("td");
 
-    // Inserts the value as plain text without interpreting HTML.
+    // Inserts the value as plain text.
     cell.textContent = value ?? "";
 
     // Adds the cell to the table row.
@@ -17,35 +16,33 @@ function addCell(row, value) {
 }
 
 
-// Loads all employees from the backend API.
+// Loads all employees from the backend.
 async function loadEmployees() {
 
-    // Finds the table body in the HTML document.
-    const tableBody = document.getElementById("mitarbeiterTabelle");
+    const tableBody =
+        document.getElementById("mitarbeiterTabelle");
 
     try {
 
         // Sends a GET request to the backend.
-        const response = await fetch("/api/mitarbeiter");
+        const response =
+            await fetch("/api/mitarbeiter");
 
-        // Stops when the backend returns an error.
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
 
-        // Converts the JSON response into a JavaScript array.
+        // Converts the response into a JavaScript array.
         const employees = await response.json();
 
         // Removes old table rows.
         tableBody.textContent = "";
 
-        // Creates one table row for each employee.
         employees.forEach(employee => {
 
             // Creates a new table row.
             const row = document.createElement("tr");
 
-            // Adds the employee data safely as text.
             addCell(row, employee.id);
             addCell(row, employee.mitarbeiterNr);
             addCell(row, employee.vorname);
@@ -55,27 +52,38 @@ async function loadEmployees() {
             addCell(row, employee.aktiv ? "Ja" : "Nein");
             addCell(row, employee.eintrittsdatum);
 
-            // Creates the table cell for action buttons.
-            const actionCell = document.createElement("td");
+            // Creates the action cell.
+            const actionCell =
+                document.createElement("td");
 
             // Creates the edit button.
-            const editButton = document.createElement("button");
+            const editButton =
+                document.createElement("button");
 
-            // Sets the visible button text.
+            editButton.type = "button";
             editButton.textContent = "Bearbeiten";
 
-            // Prevents the button from submitting the form.
-            editButton.type = "button";
-
-            // Loads the selected employee into the form.
             editButton.addEventListener("click", () => {
                 fillEmployeeForm(employee);
             });
 
-            // Adds the edit button to the action cell.
             actionCell.appendChild(editButton);
 
-            // Adds the action cell to the table row.
+
+            // Creates the delete button.
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.type = "button";
+            deleteButton.textContent = "Löschen";
+
+            deleteButton.addEventListener("click", async () => {
+                await deleteEmployee(employee.mitarbeiterNr);
+            });
+
+            actionCell.appendChild(deleteButton);
+
+            // Adds the action cell to the row.
             row.appendChild(actionCell);
 
             // Adds the completed row to the table.
@@ -84,30 +92,25 @@ async function loadEmployees() {
 
     } catch (error) {
 
-        // Removes old table content.
         tableBody.textContent = "";
 
-        // Creates a row for the error message.
-        const errorRow = document.createElement("tr");
+        const errorRow =
+            document.createElement("tr");
 
-        // Creates the error message cell.
-        const errorCell = document.createElement("td");
+        const errorCell =
+            document.createElement("td");
 
-        // The error cell covers all nine table columns.
         errorCell.colSpan = 9;
-
-        // Displays a safe error message.
         errorCell.textContent =
             "Mitarbeiter konnten nicht geladen werden.";
 
-        // Adds the error cell to the row.
         errorRow.appendChild(errorCell);
-
-        // Adds the error row to the table.
         tableBody.appendChild(errorRow);
 
-        // Writes the technical error into the browser console.
-        console.error("Failed to load employees:", error);
+        console.error(
+            "Failed to load employees:",
+            error
+        );
     }
 }
 
@@ -115,10 +118,9 @@ async function loadEmployees() {
 // Fills the form with the selected employee data.
 function fillEmployeeForm(employee) {
 
-    // Stores the employee ID for the later PUT request.
+    // Stores the selected database ID.
     editingEmployeeId = employee.id;
 
-    // Copies the employee data into the form fields.
     document.getElementById("vorname").value =
         employee.vorname ?? "";
 
@@ -138,12 +140,11 @@ function fillEmployeeForm(employee) {
     document.getElementById("eintrittsdatum").value =
         employee.eintrittsdatum ?? "";
 
-    // Changes the submit button text while editing.
+    // Changes the submit button text.
     document.querySelector(
         "#mitarbeiterFormular button[type='submit']"
     ).textContent = "Änderungen speichern";
 
-    // Removes an old message.
     document.getElementById("meldung").textContent = "";
 }
 
@@ -154,39 +155,46 @@ async function saveEmployee(event) {
     // Prevents the browser from reloading the page.
     event.preventDefault();
 
-    // Finds the message element.
-    const messageElement = document.getElementById("meldung");
+    const messageElement =
+        document.getElementById("meldung");
 
-    // Removes an old message.
     messageElement.textContent = "";
 
-    // Reads the employee data from the form.
+    // Reads the current form data.
     const employee = {
         vorname:
-            document.getElementById("vorname").value.trim(),
+            document.getElementById("vorname")
+                .value
+                .trim(),
 
         nachname:
-            document.getElementById("nachname").value.trim(),
+            document.getElementById("nachname")
+                .value
+                .trim(),
 
-        // The property name must match the Java class.
         filialeCode:
-        document.getElementById("filialCode").value,
+        document.getElementById("filialCode")
+            .value,
 
         rolle:
-        document.getElementById("rolle").value,
+        document.getElementById("rolle")
+            .value,
 
         aktiv:
-        document.getElementById("aktiv").checked,
+        document.getElementById("aktiv")
+            .checked,
 
         eintrittsdatum:
-            document.getElementById("eintrittsdatum").value || null
+            document.getElementById("eintrittsdatum")
+                .value || null
     };
 
-    // Uses POST when creating and PUT when editing.
+    // Uses POST for new employees and PUT for editing.
     const method =
-        editingEmployeeId === null ? "POST" : "PUT";
+        editingEmployeeId === null
+            ? "POST"
+            : "PUT";
 
-    // Selects the correct backend URL.
     const url =
         editingEmployeeId === null
             ? "/api/mitarbeiter"
@@ -194,7 +202,6 @@ async function saveEmployee(event) {
 
     try {
 
-        // Sends the employee data to the backend.
         const response = await fetch(url, {
             method: method,
             headers: {
@@ -205,58 +212,118 @@ async function saveEmployee(event) {
 
         if (response.ok) {
 
-            // Reads and displays the backend response.
-            const message = await response.text();
-            messageElement.textContent = message;
+            messageElement.textContent =
+                await response.text();
 
             // Clears the form.
             document
                 .getElementById("mitarbeiterFormular")
                 .reset();
 
-            // Activates the checkbox again after resetting.
-            document.getElementById("aktiv").checked = true;
+            document.getElementById("aktiv").checked =
+                true;
 
             // Ends the editing mode.
             editingEmployeeId = null;
 
-            // Restores the original submit button text.
             document.querySelector(
                 "#mitarbeiterFormular button[type='submit']"
             ).textContent = "Speichern";
 
-            // Reloads the current employee list.
+            // Reloads the table.
             await loadEmployees();
 
         } else if (response.status === 400) {
 
-            // Displays a validation error.
             messageElement.textContent =
-                "Bitte prüfen Sie die eingegebenen Mitarbeiterdaten.";
+                "Bitte prüfen Sie die eingegebenen Daten.";
+
+        } else if (response.status === 404) {
+
+            messageElement.textContent =
+                "Mitarbeiter wurde nicht gefunden.";
 
         } else {
 
-            // Displays a general backend error.
             messageElement.textContent =
                 "Mitarbeiter konnte nicht gespeichert werden.";
         }
 
     } catch (error) {
 
-        // Displays an error when the backend cannot be reached.
         messageElement.textContent =
             "Verbindung zum Server fehlgeschlagen.";
 
-        // Writes the technical error into the browser console.
-        console.error("Failed to save employee:", error);
+        console.error(
+            "Failed to save employee:",
+            error
+        );
     }
 }
 
 
-// Runs after the HTML document is completely loaded.
+// Deletes an employee by employee number.
+async function deleteEmployee(employeeNumber) {
+
+    // Asks the user for confirmation.
+    const confirmed = confirm(
+        `Mitarbeiter ${employeeNumber} wirklich löschen?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const messageElement =
+        document.getElementById("meldung");
+
+    try {
+
+        // Sends the DELETE request.
+        const response = await fetch(
+            `/api/mitarbeiter/nummer/${employeeNumber}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        if (response.status === 404) {
+
+            messageElement.textContent =
+                "Mitarbeiter wurde nicht gefunden.";
+
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP error: ${response.status}`
+            );
+        }
+
+        messageElement.textContent =
+            await response.text();
+
+        // Reloads the employee table.
+        await loadEmployees();
+
+    } catch (error) {
+
+        messageElement.textContent =
+            "Mitarbeiter konnte nicht gelöscht werden.";
+
+        console.error(
+            "Failed to delete employee:",
+            error
+        );
+    }
+}
+
+
+// Runs after the HTML document is loaded.
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Loads the employee list.
+    // Loads all employees.
     loadEmployees();
 
     // Connects the form with the save function.
