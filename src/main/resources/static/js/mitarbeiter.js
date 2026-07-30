@@ -322,7 +322,7 @@ function displayEmployees(employees) {
         tableBody.appendChild(row);
     });
 }
-// Filters employees by search term and branch.
+// Filters employees by search term, branch, and role.
 function filterEmployees() {
 
     const searchTerm =
@@ -333,6 +333,9 @@ function filterEmployees() {
 
     const selectedBranch =
         document.getElementById("filialFilter").value;
+
+    const selectedRole =
+        document.getElementById("rollenFilter").value;
 
     const filteredEmployees = allEmployees.filter(employee => {
 
@@ -357,7 +360,13 @@ function filterEmployees() {
             selectedBranch === ""
             || employee.filialeCode === selectedBranch;
 
-        return matchesSearch && matchesBranch;
+        const matchesRole =
+            selectedRole === ""
+            || employee.rolle === selectedRole;
+
+        return matchesSearch
+            && matchesBranch
+            && matchesRole;
     });
 
     displayEmployees(filteredEmployees);
@@ -376,4 +385,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("suche").addEventListener("input",filterEmployees);
     // Connects the branch filter with the filter function
     document.getElementById("filialFilter").addEventListener("change",filterEmployees);
+    // Connects the role filter with the filter function
+    document.getElementById("rollenFilter").addEventListener("change",filterEmployees);
 });
