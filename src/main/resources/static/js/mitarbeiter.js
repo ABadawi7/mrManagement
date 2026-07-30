@@ -322,14 +322,17 @@ function displayEmployees(employees) {
         tableBody.appendChild(row);
     });
 }
-// Filters employees by number, first name, or last name.
-function searchEmployees() {
+// Filters employees by search term and branch.
+function filterEmployees() {
 
     const searchTerm =
         document.getElementById("suche")
             .value
             .trim()
             .toLowerCase();
+
+    const selectedBranch =
+        document.getElementById("filialFilter").value;
 
     const filteredEmployees = allEmployees.filter(employee => {
 
@@ -345,9 +348,16 @@ function searchEmployees() {
             String(employee.nachname ?? "")
                 .toLowerCase();
 
-        return employeeNumber.includes(searchTerm)
+        const matchesSearch =
+            employeeNumber.includes(searchTerm)
             || firstName.includes(searchTerm)
             || lastName.includes(searchTerm);
+
+        const matchesBranch =
+            selectedBranch === ""
+            || employee.filialeCode === selectedBranch;
+
+        return matchesSearch && matchesBranch;
     });
 
     displayEmployees(filteredEmployees);
@@ -363,5 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Connects the form with the save function.
     document.getElementById("mitarbeiterFormular").addEventListener("submit", saveEmployee);
     // Connects the search field with the filter function.
-    document.getElementById("suche").addEventListener("input",searchEmployees);
+    document.getElementById("suche").addEventListener("input",filterEmployees);
+    // Connects the branch filter with the filter function
+    document.getElementById("filialFilter").addEventListener("change",filterEmployees);
 });
