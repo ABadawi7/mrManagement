@@ -1,5 +1,7 @@
 // Stores the ID of the employee currently being edited.
 let editingEmployeeId = null;
+// Stores all loaded employees for local filtering
+let allEmployees = [];
 
 
 // Adds one safe text cell to a table row.
@@ -34,61 +36,11 @@ async function loadEmployees() {
 
         // Converts the response into a JavaScript array.
         const employees = await response.json();
+        //Stores all employees for the search function.
+        allEmployees = employees;
 
-        // Removes old table rows.
-        tableBody.textContent = "";
-
-        employees.forEach(employee => {
-
-            // Creates a new table row.
-            const row = document.createElement("tr");
-
-            addCell(row, employee.id);
-            addCell(row, employee.mitarbeiterNr);
-            addCell(row, employee.vorname);
-            addCell(row, employee.nachname);
-            addCell(row, employee.filialeCode);
-            addCell(row, employee.rolle);
-            addCell(row, employee.aktiv ? "Ja" : "Nein");
-            addCell(row, employee.eintrittsdatum);
-
-            // Creates the action cell.
-            const actionCell =
-                document.createElement("td");
-
-            // Creates the edit button.
-            const editButton =
-                document.createElement("button");
-
-            editButton.type = "button";
-            editButton.textContent = "Bearbeiten";
-
-            editButton.addEventListener("click", () => {
-                fillEmployeeForm(employee);
-            });
-
-            actionCell.appendChild(editButton);
-
-
-            // Creates the delete button.
-            const deleteButton =
-                document.createElement("button");
-
-            deleteButton.type = "button";
-            deleteButton.textContent = "Löschen";
-
-            deleteButton.addEventListener("click", async () => {
-                await deleteEmployee(employee.mitarbeiterNr);
-            });
-
-            actionCell.appendChild(deleteButton);
-
-            // Adds the action cell to the row.
-            row.appendChild(actionCell);
-
-            // Adds the completed row to the table.
-            tableBody.appendChild(row);
-        });
+        // Displays all loaded employees.
+        displayEmployees(employees);
 
     } catch (error) {
 
@@ -318,6 +270,88 @@ async function deleteEmployee(employeeNumber) {
         );
     }
 }
+// Displays the given employees in the table.
+function displayEmployees(employees) {
+
+    const tableBody =
+        document.getElementById("mitarbeiterTabelle");
+
+    // Removes old table rows.
+    tableBody.textContent = "";
+
+    employees.forEach(employee => {
+
+        const row = document.createElement("tr");
+
+        addCell(row, employee.id);
+        addCell(row, employee.mitarbeiterNr);
+        addCell(row, employee.vorname);
+        addCell(row, employee.nachname);
+        addCell(row, employee.filialeCode);
+        addCell(row, employee.rolle);
+        addCell(row, employee.aktiv ? "Ja" : "Nein");
+        addCell(row, employee.eintrittsdatum);
+
+        const actionCell =
+            document.createElement("td");
+
+        const editButton =
+            document.createElement("button");
+
+        editButton.type = "button";
+        editButton.textContent = "Bearbeiten";
+
+        editButton.addEventListener("click", () => {
+            fillEmployeeForm(employee);
+        });
+
+        actionCell.appendChild(editButton);
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.type = "button";
+        deleteButton.textContent = "Löschen";
+
+        deleteButton.addEventListener("click", async () => {
+            await deleteEmployee(employee.mitarbeiterNr);
+        });
+
+        actionCell.appendChild(deleteButton);
+        row.appendChild(actionCell);
+        tableBody.appendChild(row);
+    });
+}
+// Filters employees by number, first name, or last name.
+function searchEmployees() {
+
+    const searchTerm =
+        document.getElementById("suche")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const filteredEmployees = allEmployees.filter(employee => {
+
+        const employeeNumber =
+            String(employee.mitarbeiterNr ?? "")
+                .toLowerCase();
+
+        const firstName =
+            String(employee.vorname ?? "")
+                .toLowerCase();
+
+        const lastName =
+            String(employee.nachname ?? "")
+                .toLowerCase();
+
+        return employeeNumber.includes(searchTerm)
+            || firstName.includes(searchTerm)
+            || lastName.includes(searchTerm);
+    });
+
+    displayEmployees(filteredEmployees);
+}
 
 
 // Runs after the HTML document is loaded.
@@ -327,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadEmployees();
 
     // Connects the form with the save function.
-    document
-        .getElementById("mitarbeiterFormular")
-        .addEventListener("submit", saveEmployee);
+    document.getElementById("mitarbeiterFormular").addEventListener("submit", saveEmployee);
+    // Connects the search field with the filter function.
+    document.getElementById("suche").addEventListener("input",searchEmployees);
 });
