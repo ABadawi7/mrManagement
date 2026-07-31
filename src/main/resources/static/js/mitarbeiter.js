@@ -98,6 +98,8 @@ function fillEmployeeForm(employee) {
     ).textContent = "Änderungen speichern";
 
     document.getElementById("meldung").textContent = "";
+
+    document.getElementById("abbrechenButton").hidden = false;
 }
 
 
@@ -503,6 +505,31 @@ async function activateEmployee(employeeNumber) {
         );
     }
 }
+// Cancels the current editing process.
+function cancelEditing() {
+
+    // Ends the editing mode.
+    editingEmployeeId = null;
+
+    // Clears the form.
+    document
+        .getElementById("mitarbeiterFormular")
+        .reset();
+
+    // Restores the default active status.
+    document.getElementById("aktiv").checked = true;
+
+    // Restores the original submit button text.
+    document.querySelector(
+        "#mitarbeiterFormular button[type='submit']"
+    ).textContent = "Speichern";
+
+    // Hides the cancel button.
+    document.getElementById("abbrechenButton").hidden = true;
+
+    // Removes old messages.
+    document.getElementById("meldung").textContent = "";
+}
 
 
 // Runs after the HTML document is loaded.
@@ -519,4 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("filialFilter").addEventListener("change",filterEmployees);
     // Connects the role filter with the filter function
     document.getElementById("rollenFilter").addEventListener("change",filterEmployees);
+
+    // Connects the cancel button with the cancel funktion.
+    document.getElementById("abbrechenButton").addEventListener("click", cancelEditing);
 });
