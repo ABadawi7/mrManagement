@@ -13,20 +13,20 @@
 
 
 <!-- Form for creating a new employee.-->
-<form id="mitarbeiterFormular" novalidate>
+<form id="mitarbeiterFormular">
     <div>
         <label for="vorname">Vorname</label>
-        <input type="text" id="vorname" name="vorname">
+        <input type="text" id="vorname" name="vorname" required>
     </div>
 
     <div>
         <label for="nachname">nachname</label>
-        <input type="text" id="nachname" name="nachname">
+        <input type="text" id="nachname" name="nachname" required>
     </div>
 
     <div>
         <label for="filialCode">Filiale</label>
-        <select id="filialCode" name="filialCode">
+        <select id="filialCode" name="filialCode" required>
             <option value="">Bitte auswählen</option>
             <option value="DKA106">DKA106</option>
             <option value="DKA122">DKA122</option>
@@ -47,7 +47,7 @@
 
     <div>
         <label for="eintrittsdatum">Eintrittdatum</label>
-        <input type="date" id="eintrittsdatum" name="eintrittsdatum">
+        <input type="date" id="eintrittsdatum" name="eintrittsdatum" required>
     </div>
 
 

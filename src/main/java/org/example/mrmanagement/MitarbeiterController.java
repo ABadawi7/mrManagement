@@ -34,19 +34,25 @@ public class MitarbeiterController {
     }
 
     @PostMapping
-    // Handles POST requests for creating a new employee.
-    public String mitarbeiterAnlegen(@Valid @RequestBody Mitarbeiter mitarbeiter) {
+    public ResponseEntity<String> mitarbeiterAnlegen(
+            @Valid @RequestBody Mitarbeiter mitarbeiter) {
 
-        // Saves the received employee in the database.
-        int anzahl = mitarbeiterService.mitarbeiterAnlegen(mitarbeiter);
+        try {
 
-        // Returns a success message when exactly one row was inserted.
-        if (anzahl == 1) {
-            return "Mitarbeiter wurde gespeichert";
+            String oneTimePassword =
+                    mitarbeiterService.mitarbeiterAnlegen(mitarbeiter);
+
+            return ResponseEntity.ok("Mitarbeiter wurde gespeichert." +
+                    "\nDie Mitarbeiternummer lautet: " + mitarbeiter.getMitarbeiterNr()+
+                    "  Einmalpasswort: "  + oneTimePassword
+            );
+
+        } catch (IllegalStateException exception) {
+
+            return ResponseEntity
+                    .internalServerError()
+                    .body(exception.getMessage());
         }
-
-        // Returns an error message when no employee was inserted.
-        return "Mitarbeiter konnte nicht gespeichert werden";
     }
 
 
@@ -110,6 +116,25 @@ public class MitarbeiterController {
         return ResponseEntity.ok(
                 "Mitarbeiter wurde aktiviert."
         );
+    }
+    // Creates a new one-time password for an employee.
+    @PostMapping("/nummer/{employeeNumber}/einmalpasswort")
+    public ResponseEntity<String> createOneTimePassword(
+            @PathVariable String employeeNumber) {
+
+        try {
+
+            String oneTimePassword =
+                    mitarbeiterService.createOneTimePassword(
+                            employeeNumber
+                    );
+
+            return ResponseEntity.ok(oneTimePassword);
+
+        } catch (IllegalArgumentException exception) {
+
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
