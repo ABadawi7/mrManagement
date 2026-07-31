@@ -1,122 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
+
 <head>
     <meta charset="UTF-8">
-    <!-- Makes the page responsive von smaller screens.-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRW</title>
+
+    <!-- Makes the page responsive on smaller screens. -->
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mitarbeiterverwaltung</title>
+
+    <!-- Loads the employee-management stylesheet. -->
+    <link
+            rel="stylesheet"
+            href="/mitarbeiter.css"
+    >
 </head>
+
 <body>
 
-<!-- Main heading of the employee management page. -->
-<h1>Mitarbeiterverwaltung</h1>
+<!-- Fixed sidebar for current and future functions. -->
+<aside class="sidebar">
+    <nav>
+        <ul>
+            <li>
+                <a
+                        href="/mitarbeiter.html"
+                        class="active"
+                >
+                    Mitarbeiter
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Filialen
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Arbeitszeiten
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Berechtigungen
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Einstellungen
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</aside>
 
 
-<!-- Form for creating a new employee.-->
-<form id="mitarbeiterFormular">
-    <div>
-        <label for="vorname">Vorname</label>
-        <input type="text" id="vorname" name="vorname" required>
+<!-- Contains the complete page next to the sidebar. -->
+<main class="mainContent">
+
+    <!-- Fixed header above the page content. -->
+    <header class="pageHeader">
+
+        <h2>SINAROX</h2>
+
+        <p>Mitarbeiterverwaltung</p>
+
+    </header>
+
+
+    <!-- Contains the scrollable employee-management content. -->
+    <div class="pageContent">
+
+        <!-- Form for creating and editing employees. -->
+        <form id="mitarbeiterFormular">
+
+            <div>
+                <label for="vorname">
+                    Vorname
+                </label>
+
+                <input
+                        type="text"
+                        id="vorname"
+                        name="vorname"
+                        required
+                >
+            </div>
+
+
+            <div>
+                <label for="nachname">
+                    Nachname
+                </label>
+
+                <input
+                        type="text"
+                        id="nachname"
+                        name="nachname"
+                        required
+                >
+            </div>
+
+
+            <div>
+                <label for="filialCode">
+                    Filiale
+                </label>
+
+                <select
+                        id="filialCode"
+                        name="filialCode"
+                        required
+                >
+                    <option value="">
+                        Bitte auswählen
+                    </option>
+
+                    <option value="DKA106">
+                        DKA106
+                    </option>
+
+                    <option value="DKA122">
+                        DKA122
+                    </option>
+
+                    <option value="DKA36">
+                        DKA36
+                    </option>
+                </select>
+            </div>
+
+
+            <div>
+                <label for="rolle">
+                    Rolle
+                </label>
+
+                <select
+                        id="rolle"
+                        name="rolle"
+                        required
+                >
+                    <option value="">
+                        Bitte auswählen
+                    </option>
+
+                    <option value="Kassierer">
+                        Kassierer
+                    </option>
+
+                    <option value="Manager">
+                        Manager
+                    </option>
+
+                    <option value="Admin">
+                        Admin
+                    </option>
+                </select>
+            </div>
+
+
+            <div>
+                <label for="eintrittsdatum">
+                    Eintrittsdatum
+                </label>
+
+                <input
+                        type="date"
+                        id="eintrittsdatum"
+                        name="eintrittsdatum"
+                        required
+                >
+            </div>
+
+
+            <div>
+                <label for="aktiv">
+                    Aktiv
+                </label>
+
+                <input
+                        type="checkbox"
+                        id="aktiv"
+                        name="aktiv"
+                        checked
+                >
+            </div>
+
+
+            <!-- Submits the employee form. -->
+            <button type="submit">
+                Speichern
+            </button>
+
+            <!-- Cancels the current editing process. -->
+            <button
+                    type="button"
+                    id="abbrechenButton"
+                    hidden
+            >
+                Abbrechen
+            </button>
+
+        </form>
+
+
+        <!-- Displays success and error messages. -->
+        <p id="meldung"></p>
+
+
+        <hr>
+
+
+        <!-- Contains search and filter controls. -->
+        <div class="filterBar">
+
+            <div class="filterGroup">
+
+                <label for="suche">
+                    Mitarbeiter suchen
+                </label>
+
+                <input
+                        type="text"
+                        id="suche"
+                        placeholder="Name oder Mitarbeiternummer"
+                >
+
+            </div>
+
+
+            <div class="filterGroup">
+
+                <label for="filialFilter">
+                    Filiale filtern
+                </label>
+
+                <select id="filialFilter">
+
+                    <option value="">
+                        Alle Filialen
+                    </option>
+
+                    <option value="DKA106">
+                        DKA106
+                    </option>
+
+                    <option value="DKA122">
+                        DKA122
+                    </option>
+
+                    <option value="DKA36">
+                        DKA36
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filterGroup">
+
+                <label for="rollenFilter">
+                    Rolle filtern
+                </label>
+
+                <select id="rollenFilter">
+
+                    <option value="">
+                        Alle Rollen
+                    </option>
+
+                    <option value="Kassierer">
+                        Kassierer
+                    </option>
+
+                    <option value="Manager">
+                        Manager
+                    </option>
+
+                    <option value="Admin">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- Displays all employees. -->
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mitarbeiternummer</th>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Filiale</th>
+                <th>Rolle</th>
+                <th>Aktiv</th>
+                <th>Eintrittsdatum</th>
+                <th>Aktionen</th>
+            </tr>
+            </thead>
+
+            <!-- Employee rows are inserted with JavaScript. -->
+            <tbody id="mitarbeiterTabelle"></tbody>
+
+        </table>
+
     </div>
 
-    <div>
-        <label for="nachname">nachname</label>
-        <input type="text" id="nachname" name="nachname" required>
-    </div>
-
-    <div>
-        <label for="filialCode">Filiale</label>
-        <select id="filialCode" name="filialCode" required>
-            <option value="">Bitte auswählen</option>
-            <option value="DKA106">DKA106</option>
-            <option value="DKA122">DKA122</option>
-            <option value="DKA36">DKA36</option>
-        </select>
-    </div>
+</main>
 
 
-    <div>
-        <label for="rolle">Rolle</label>
-        <select name="rolle" id="rolle" required>
-            <option value="">Bitte auswählen</option>
-            <option value="Kassierer">Kassierer</option>
-            <option value="Manager">Manager</option>
-            <option value="Admin">Admin</option>
-        </select>
-    </div>
-
-    <div>
-        <label for="eintrittsdatum">Eintrittdatum</label>
-        <input type="date" id="eintrittsdatum" name="eintrittsdatum" required>
-    </div>
-
-
-
-    <div>
-        <label for="aktiv">Aktiv</label>
-        <input type="checkbox" id="aktiv" name="aktiv" checked>
-    </div>
-
-
-
-
-    <!-- Submit the employee form. -->
-    <button type="submit">Speichern</button>
-    <!-- Cancels the current editing process. -->
-    <button type="button" id="abbrechenButton" hidden>
-        Abbrechen
-    </button>
-</form>
-
-<p id="meldung"></p>
-
-<hr>
-<div>
-    <label for="suche"> Suchen: </label>
-    <input type="text" id="suche" placeholder="Name oder Mitarbeiternummer..">
-</div>
-
-<!-- Filter for employee branches. -->
-<label for="filialFilter">Filiale filtern</label>
-
-<select id="filialFilter">
-    <option value="">Alle Filialen</option>
-    <option value="DKA106">DKA106</option>
-    <option value="DKA122">DKA122</option>
-    <option value="DKA36">DKA36</option>
-</select>
-
-<!-- Filter for employee roles. -->
-<label for="rollenFilter">Rolle filtern</label>
-
-<select id="rollenFilter">
-    <option value="">Alle Rollen</option>
-    <option value="Kassierer">Kassierer</option>
-    <option value="Manager">Manager</option>
-    <option value="Admin">Admin</option>
-</select>
-
-<!-- Table for displaying all employees. -->
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Mitarbeiternummer</th>
-        <th>Vorname</th>
-        <th>Nachname</th>
-        <th>Filiale</th>
-        <th>Rolle</th>
-        <th>Aktiv</th>
-        <th>Eintrittsdatum</th>
-        <!-- Contains buttons for editing employee data.-->
-        <th>Aktionen</th>
-    </tr>
-    </thead>
-
-    <!-- Employee rows will be inserted here with JavaScript-->
-    <tbody id="mitarbeiterTabelle"></tbody>
-</table>
-
+<!-- Loads the employee-management JavaScript. -->
 <script src="/js/mitarbeiter.js"></script>
+
 </body>
+
 </html>
