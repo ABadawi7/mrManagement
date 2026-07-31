@@ -201,6 +201,7 @@ button:hover {
     padding: 10px;
     font-weight: bold;
     text-align: center;
+    color: green;
 }
 
 /* Styles the horizontal separator. */
